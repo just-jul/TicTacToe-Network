@@ -8,10 +8,22 @@ public class ClientHandler extends Thread {
     private Socket socket;
     private BufferedReader in;
     private PrintWriter out;
+    String nazwa;
+    String symbol;
 
 
-    public ClientHandler(Socket socket){
+    public ClientHandler(Socket socket, String symbol){
         this.socket = socket;
+        this.symbol = symbol;
+    }
+
+    public void run(){
+        try{
+            out.println("Podaj nazwe: -> ");
+            nazwa = in.readLine();
+
+            Client client = new Client(nazwa, symbol);
+        }
     }
 
 }

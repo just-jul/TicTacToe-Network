@@ -24,6 +24,8 @@ public class App extends JFrame implements ActionListener{
     private JLabel scoreTitle2 = new JLabel("Player 2");
     static Font globalFont = new Font("Helvetica", Font.PLAIN, 16);
 
+    private String[][] board = new String[3][3];
+    private Client currentPlayer;
 
     public static void main(String[] args) {
 
@@ -39,6 +41,8 @@ public class App extends JFrame implements ActionListener{
         App okno = new App("Tic Tac Toe");
         okno.init();
         okno.setVisible(true);
+
+        okno.connect();
     }
 
     App(String tytul) {
@@ -104,20 +108,30 @@ public class App extends JFrame implements ActionListener{
     }
 
     public void connect(){
-        try{
-            socket = new Socket(adresSerwera, portSerwera);
-        } catch (IOException e) {
-            throw new RuntimeException(e);
+        Server server = new Server();
+        server.startServer();
+    }
+
+    public void move(Client currentPlayer, String currentSymbol){
+        String symbol = currentPlayer.getSymbol();
+
+        if(symbol.equals(currentSymbol)){
+            return;
         }
 
-        Thread watek = new
+        if(currentPlayer == playerX){
+            currentPlayer == playerY;
+        }else{
+            currentPlayer = playerX;
+        }
+
     }
 
     @Override
     public void actionPerformed(ActionEvent e) {
-        JButton sourceBtn = (JButton) e.getSource();
+        Object source = e.getSource();
 
-        if(sourceBtn == startBtn){
+        if(source == startBtn){
 
         }
     }

@@ -11,11 +11,13 @@ public class Server {
     int port = 12345;
     String serverAdress = "127.0.0.1";
     Client client;
+    int clientCounter;
 
 
-    public Server(ServerSocket serverSocket) {
+    public Server() {
         try{
             this.serverSocket = new ServerSocket(port);
+            clientCounter = 1;
         } catch (IOException e) {
             System.out.println("Can't initialize server.");
             System.exit(1);
@@ -25,14 +27,25 @@ public class Server {
         if(serverSocket == null) return;
 
         try{
-            System.out.println("Waiting on client...");
+            System.out.println("Waiting on clients...");
 
-            while(!serverSocket.isClosed()){
+            while(!serverSocket.isClosed() && clientCounter <= 2){
                 clientSocket = serverSocket.accept();
                 System.out.println("A new client has connected");
 
-                new ClientHandler(clientSocket).start();
+                String symbol = "";
+                if(clientCounter == 1){
+                    symbol = "X";
+                }else{
+                    symbol = "Y";
+                }
+
+                ClientHandler ch = new ClientHandler(clientSocket, symbol);
+                ch.start();
+                clientCounter++;
             }
+
+            clientSocket.close();
         }catch (IOException e){
             e.printStackTrace();
         }
