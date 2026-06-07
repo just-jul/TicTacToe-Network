@@ -1,17 +1,18 @@
 import java.util.ArrayList;
 
 public class Client {
+    // przwchowuje informacje o kliencie i jego punktach
 
     private String name;
     private int points;
-    private int wins;
     private String symbol;
+    private ClientHandler clientHandler;
 
-    public Client(String name, String symbol){
+    public Client(String name, String symbol, ClientHandler clientHandler){
         this.name = name;
         this.symbol = symbol;
+        this.clientHandler = clientHandler;
         this.points = 0;
-        this.wins = 0;
     }
 
     public String getName() {
@@ -22,10 +23,6 @@ public class Client {
         return points;
     }
 
-    public int getWins() {
-        return wins;
-    }
-
     public String getSymbol() {
         return symbol;
     }
@@ -33,8 +30,6 @@ public class Client {
     public void addPoint(){
         points++;
     }
-    public void addWin(){
-        wins++;
-    }
+
 
 }
