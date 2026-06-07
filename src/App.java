@@ -2,6 +2,7 @@ import java.awt.*;
 import java.awt.event.*;
 import java.io.*;
 import java.net.Socket;
+import java.util.Arrays;
 import javax.swing.*;
 import javax.swing.plaf.FontUIResource;
 
@@ -144,21 +145,24 @@ public class App extends JFrame implements ActionListener {
 
     }
 
-    public void connect(String playerName, boolean isHost) {
+    public void connect(String playerName) {
         new Thread(() -> {
-
             try {
-                if (isHost) {
-                    server = new Server();
-                     // only host starts server
-                    new Thread(() -> server.startServer()).start();
-                    // wait for server to start
-                    Thread.sleep(500);
-                }
+                Socket socket;
+
                 // connecting to server
                 try {
-                    Socket socket = new Socket("localhost", 12345);
 
+                    socket = new Socket("localhost", 12345);
+                    isHost = false;
+                } catch (IOException e) {
+                    // no server -  become host
+                    isHost = true;
+                    server = new Server();
+                    new Thread(() -> server.startServer()).start();
+                    Thread.sleep(500);
+                    socket = new Socket("localhost", 12345);
+                }
                     out = new PrintWriter(
                             socket.getOutputStream(), true);
                     in =
@@ -226,7 +230,7 @@ public class App extends JFrame implements ActionListener {
 
                                         JOptionPane.showMessageDialog(this, "Winner: " + winner);
 
-                                        java.util.Arrays.fill(board, "");
+                                        Arrays.fill(board, "");
                                     });
                                 } else if (msg.equals("RESET")) {
                                     SwingUtilities.invokeLater(() -> {
@@ -249,12 +253,8 @@ public class App extends JFrame implements ActionListener {
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
 
         }).start();
-
     }
 
     public void move(int position) {
@@ -277,14 +277,7 @@ public class App extends JFrame implements ActionListener {
         Object source = e.getSource();
 
 
-
-
         if(source == startBtn){
-            String[] options = {"Host", "Join"};
-            int choice = JOptionPane.showOptionDialog(this,
-                    "Host or Join?", "Tic Tac Toe",
-                    JOptionPane.DEFAULT_OPTION, JOptionPane.QUESTION_MESSAGE,
-                    null, options, options[0]);
 
             String result = (String) JOptionPane.showInputDialog(this,
                     "Enter player name:", "",
@@ -292,9 +285,8 @@ public class App extends JFrame implements ActionListener {
 
             if (result != null && !result.isEmpty()) {
                 playerName = result;
-                isHost = (choice == 0);
 
-                connect(playerName, isHost);
+                connect(playerName);
             }
         }
     }
