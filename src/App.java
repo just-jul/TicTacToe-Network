@@ -30,7 +30,6 @@ public class App extends JFrame implements ActionListener {
 
     private String[] board = Server.board;
     private JButton[] buttons = new JButton[9];
-    // private String currentPlayer = "X";
 
     private Client playerX;
     private Client playerY;
@@ -78,6 +77,7 @@ public class App extends JFrame implements ActionListener {
         titlePanel.add(title);
         titlePanel.setLayout(new GridBagLayout());
 
+        // Panel wyników dla Gracza 1
         scorePanel1.setLayout(new BorderLayout());
         scorePanel1.setPreferredSize(new Dimension(160, 200));
         scorePanel1.setBackground(Color.WHITE);
@@ -85,6 +85,7 @@ public class App extends JFrame implements ActionListener {
         scorePanel1.add(scoreDisplay1, BorderLayout.CENTER);
         scorePanel1.add(winsDisplay1, BorderLayout.SOUTH);
 
+        // Panel wyników dla Gracza 2
         scorePanel2.setLayout(new BorderLayout());
         scorePanel2.setPreferredSize(new Dimension(160, 200));
         scorePanel2.add(scoreTitle2, BorderLayout.NORTH);
@@ -150,28 +151,31 @@ public class App extends JFrame implements ActionListener {
             try {
                 Socket socket;
 
-                // connecting to server
+                // Próba połączenia z istniejącym serwerem
                 try {
 
                     socket = new Socket("localhost", 12345);
-                    isHost = false;
+                    isHost = false; // serwer już działa - gracz nie jest hostem
                 } catch (IOException e) {
-                    // no server -  become host
+                    // Serwer nie odpowiada - gracz zostaje hostem
                     isHost = true;
                     server = new Server();
                     new Thread(() -> server.startServer()).start();
-                    Thread.sleep(500);
+                    // uruchamiamy serwer w tle
+                    Thread.sleep(500); // czekamy aż serwer zacznie działać
                     socket = new Socket("localhost", 12345);
                 }
+                 // Strumienie wejścia/wyjścia do komunikacji z serwerem
                     out = new PrintWriter(
                             socket.getOutputStream(), true);
                     in =
                             new BufferedReader(
                                     new InputStreamReader(socket.getInputStream()));
 
-                    // sending player name
+                    // Wysyłamy imie gracza jako pierwszą wiadomość
                     out.println(playerName);
 
+                // Aktualizacja GUI na wątku Swing (SwingUtilities.invokeLater jest wymagane dla Swing)
                     SwingUtilities.invokeLater(() -> {
                         if (isHost) {
                             playerX = new Client(playerName, "X", null);
