@@ -16,6 +16,18 @@ The server listens for exactly two client connections. Once both players are con
 - Java 8 or higher
 - Both players on the same local network (or localhost for testing)
 
+**Running the Game**
+Compile all source files and run App:
+```
+javac src/*.java
+java -cp src App
+```
+A window will open. Click Start, enter your player name, and the app handles the rest:
+
+The first player to click Start automatically starts the server on port 12345 and connects as Player X.
+The second player runs the same app on another machine (or the same machine), clicks Start, and connects as Player O.
+Once both players are connected, the game begins.
+
 ---
 
 ## 🔨Built With
